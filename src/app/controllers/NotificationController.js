@@ -3,14 +3,14 @@ import Notification from '../schemas/Notification';
 
 class NotificationController {
   async index(req, res) {
-    const isProvider = await User.findOne({
+    const checkIsProvider = await User.findOne({
       where: { id: req.userId, provider: true }
     });
 
-    if (!isProvider) {
+    if (!checkIsProvider) {
       return res
         .status(401)
-        .json({ error: 'You can only create appointments with providers' });
+        .json({ error: 'Only provider can load notifications' });
     }
 
     const notifications = await Notification.find({
