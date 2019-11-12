@@ -1,11 +1,24 @@
 import Sequelize, { Model } from 'sequelize';
+import { isBefore, subHours } from 'date-fns';
 
 class Appointment extends Model {
   static init(connection) {
     super.init(
       {
         date: Sequelize.DATE,
-        canceled_at: Sequelize.DATE
+        canceled_at: Sequelize.DATE,
+        past: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return isBefore(this.date, new Date());
+          }
+        },
+        cancellable: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return isBefore(new Date(), subHours(this.date, 2));
+          }
+        }
       },
       {
         sequelize: connection
